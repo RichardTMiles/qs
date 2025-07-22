@@ -506,6 +506,23 @@ test('parse()', function (t) {
         st.end();
     });
 
+    t.test('coerces numeric object keys to arrays with forceArrays', function (st) {
+        st.deepEqual(
+            qs.parse('a[0]=b&a[1]=c', { arrayLimit: 0, forceArrays: true }),
+            { a: ['b', 'c'] }
+        );
+
+        st.deepEqual(
+            qs.parse(
+                'WHERE[property_units.unit_id][IN][0]=a&WHERE[property_units.unit_id][IN][1]=b',
+                { arrayLimit: 0, forceArrays: true }
+            ),
+            { WHERE: { 'property_units.unit_id': { IN: ['a', 'b'] } } }
+        );
+
+        st.end();
+    });
+
     t.test('allows for query string prefix', function (st) {
         st.deepEqual(qs.parse('?foo=bar', { ignoreQueryPrefix: true }), { foo: 'bar' });
         st.deepEqual(qs.parse('foo=bar', { ignoreQueryPrefix: true }), { foo: 'bar' });
